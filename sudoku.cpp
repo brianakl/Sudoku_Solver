@@ -186,3 +186,168 @@ void Sudoku::dancing_starter(){
 void Sudoku::dancing_links(){
 
 }
+
+int Sudoku::cover_matrix_index(int num, int row, int col){
+    return (row-1) * n * n + (col - 1) * n + (num - 1);
+}
+
+vector<vector<int> > Sudoku::create_cover_matrix(){
+    int size = n * n;
+    
+    vector<vector<int> > matrix(n*n*n, vector<int>(n*n*4));
+    int h = 0;
+    h = cell_constraint(matrix,h);
+    h = row_constraint(matrix,h);
+    h = col_constraint(matrix,h);
+    box_constraints(matrix,h);
+
+    return matrix;
+}
+
+int Sudoku::box_constraints(vector<vector<int> > matrix, int h){
+    int box_size = sqrt(n);
+    for (int r = 1; r <= n; r += box_size){
+        for (int c = 1; c <= n; c += box_size){
+            for (int num = 1; num <= n; n++, h++){
+                for (int rowdelta = 0; rowdelta < box_size; rowdelta++){
+                    for (int coldelta = 0; coldelta < box_size; coldelta++){
+                        int index = cover_matrix_index(num, r + rowdelta, c + coldelta);
+                        matrix[index][h] = 1;
+                    }
+                }
+            }
+        }
+    }
+    return h;
+}
+
+
+int Sudoku::row_constraint(vector<vector<int> > matrix,int h){
+
+    for (int row = 1; row <= n; row++) {
+      for (int num = 1; num <= n; num++, h++) {
+        for (int column = 1; column <= n; column++) {
+          int index = cover_matrix_index(row, column, n);
+            matrix[index][h] = 1;
+        }
+      }
+    }
+	
+    return h;
+}
+
+int Sudoku::col_constraint(vector<vector<int> > matrix, int h){
+
+    for (int column = 1; column <= n; column++) {
+      for (int num = 1; num <= n; num++, h++) {
+        for (int row = 1; row <= n; row++) {
+          int index = cover_matrix_index(row, column, n);
+          matrix[index][h] = 1;
+        }
+      }
+    }
+	
+    return h;
+}
+
+int Sudoku::cell_constraint(vector<vector<int> > matrix, int h){
+
+    for (int row = 1; row <= n; row++) {
+      for (int column = 1; column <= n; column++, h++) {
+        for (int num = 1; num <= n; num++) {
+          int index = cover_matrix_index(row, column, n);
+          matrix[index][h] = 1;
+        }
+      }
+    }
+
+    return h;
+}
+
+vector<vector<int> > Sudoku::convert(){
+    vector<vector<int> > coverMatrix = create_cover_matrix();
+
+    for (int row = 1; row <= n; row++) {
+      for (int column = 1; column <= n; column++) {
+        int n = Board[row - 1][column - 1];
+
+        if (n != 0) {
+          for (int num = 1; num <= n; num++) {
+            if (num != n) {
+                for(int i = 0; i < n; i++){
+                    coverMatrix[cover_matrix_index(num,row,column)][i] = 0;
+                }
+            }
+          }
+        }
+      }
+    }
+
+    return coverMatrix;
+
+}
+
+DancingNode* DancingNode::linkDown(DancingNode* node){
+    node->down = down;
+    node->down->up = node;
+    node->up = this;
+    down = node;
+    return node;
+}
+
+DancingNode* DancingNode::linkRight(DancingNode* node){
+    node->right = right;
+    node->right->left = node;
+    node->left = this;
+
+    return node;
+}
+
+void DancingNode::removeLeftRight(){
+    left->right = right;
+    right->left = left;
+}
+
+void DancingNode::reinsertLeftRight(){
+    left->right = this;
+    right->left = this;
+}
+
+void DancingNode::removeTopDown(){
+    up->down = down;
+    down->up = up;
+}
+
+void DancingNode::reinsertTopDown(){
+    up->down = this;
+    down->up = this;
+}
+
+ColumnNode::ColumnNode(string n){
+    DancingNode(*this);
+    size = 0;
+    name = n;
+    
+}
+
+void DancingNode::cover(){
+    removeLeftRight();
+
+    for(DancingNode* i = down; i != this; i = i->down){
+        for (DancingNode* j = i->right; j != i; j = j->right){
+            j->removeTopDown();
+            j->column->size--;
+        }
+    }
+}
+
+void DancingNode::uncover(){
+
+    for(DancingNode* i = up; i != this; i = i->up){
+        for (DancingNode* j = i->left; j != i; j = j->left){
+            j->column->size++;
+            j->reinsertTopDown();
+        }
+    }
+    reinsertLeftRight();
+}
