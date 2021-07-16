@@ -35,4 +35,12 @@ class Sudoku{
         int find_open_row();
         int find_open_col();
 
+        int cover_matrix_index(int,int,int);
+        int create_cover_matrix();
+        int sector_constraints(int (&array)[],int);
+        int col_constraint(int (&array)[],int);
+        int row_constraint(int (&array)[],int);
+        int cell_constraint(int (&array)[],int);
+        int convert(int (&array)[],int);
+
 };
