@@ -79,10 +79,11 @@ bool Sudoku::check_col(int num, int c){
 
 bool Sudoku::check_sector(int num, int r, int c){
 
-    int start_row, start_col, root_n;
-    root_n = sqrt(n);
-    start_row = r - r % root_n;
-    start_col = c -c % root_n;
+    int root_n = sqrt(n);
+    int start_row = r / root_n;
+    int start_col = c / root_n;
+
+    //cout << start_row << " " << start_col << endl;
     
 
     for (int i = 0; i < root_n; i++){
@@ -140,30 +141,6 @@ void Sudoku::back_starter(){
 
 bool Sudoku::back_tracking(){
 
-
-  for (int row = 0; row < n; row++) {
-    for (int col = 0; col < n; col++) {
-      if (Board[row][col] == 0) {
-        for (int number = 1; number <= n; number++) {
-          if (is_legal(row, col, number)) {
-            Board[row][col] = number;
-          
-            if (back_tracking()) {
-              return true;
-            } else {
-              Board[row][col] = 0;
-            }
-          }
-        }
-		
-        return false;
-      }
-    }
-  }
-  
-  return true;
-
-/*
     if (is_complete())
         return true;
 
@@ -194,6 +171,18 @@ bool Sudoku::back_tracking(){
 
     return false;
 
-    */
+
+}
+
+/*
+dancing links is an algorithm where the possible choices for each square are linked lists
+for that constraint
+*/
+void Sudoku::dancing_starter(){
+
+}
+
+
+void Sudoku::dancing_links(){
 
 }

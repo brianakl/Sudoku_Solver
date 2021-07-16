@@ -25,6 +25,7 @@ class Sudoku{
         void print_board(vector<vector<int> >);
         void back_starter();
         bool back_tracking();
+        void dancing_starter();
         void dancing_links();
         bool check_row(int,int);
         bool check_col(int,int);
