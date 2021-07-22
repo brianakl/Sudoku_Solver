@@ -80,8 +80,8 @@ bool Sudoku::check_col(int num, int c){
 bool Sudoku::check_sector(int num, int r, int c){
 
     int root_n = sqrt(n);
-    int start_row = r / root_n;
-    int start_col = c / root_n;
+    int start_row = r - r % root_n;
+    int start_col = c - c % root_n;
 
     //cout << start_row << " " << start_col << endl;
     
@@ -330,7 +330,7 @@ ColumnNode::ColumnNode(string n){
     
 }
 
-void DancingNode::cover(){
+void ColumnNode::cover(){
     removeLeftRight();
 
     for(DancingNode* i = down; i != this; i = i->down){
@@ -341,7 +341,7 @@ void DancingNode::cover(){
     }
 }
 
-void DancingNode::uncover(){
+void ColumnNode::uncover(){
 
     for(DancingNode* i = up; i != this; i = i->up){
         for (DancingNode* j = i->left; j != i; j = j->left){
@@ -350,4 +350,48 @@ void DancingNode::uncover(){
         }
     }
     reinsertLeftRight();
+}
+
+//creating a quadruple linked list
+ColumnNode* DLX::createDLXvec(vector<vector<int> > cover){
+    int nbColumns = cover[0].size();
+
+    ColumnNode* headerNode = new ColumnNode("header");
+
+    vector<ColumnNode*> colNodes;
+
+    for(int i = 0; i < nbColumns; i++){
+        ColumnNode* n = new ColumnNode(i + "");
+        colNodes.push_back(n);
+        headerNode->linkRight(n);
+    }
+
+    headerNode = headerNode->right->column;
+
+    for (auto it : cover){
+        DancingNode* prev = nullptr;
+        for(int j = 0 ; j < nbColumns; j++){
+            if (it[j] == 1){
+                ColumnNode* col = colNodes[j];
+                DancingNode* newNode = new DancingNode(col);
+                if (prev == nullptr){
+                    prev = newNode;
+                }
+
+                col->up->linkDown(newNode);
+                prev = prev->linkRight(newNode);
+                col->size++;
+
+            }
+        }
+    }
+
+    headerNode->size = nbColumns;
+
+    return headerNode;
+}
+
+//implementing the algorithm
+void DLX::process(int k){
+
 }

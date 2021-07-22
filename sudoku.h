@@ -47,28 +47,43 @@ class Sudoku{
 };
 
 class DancingNode{
-    private:
+    
+    public:
         DancingNode* up, *down, *left, *right;
+        //links the current node to the corresponding column in the cover matrix
         ColumnNode* column;
 
-    public:
         DancingNode(){ up = down = left = right = this;};
-        DancingNode(ColumnNode c) {DancingNode();column = c;};
+        DancingNode(ColumnNode* c) {DancingNode();column = c;};
         DancingNode* linkDown(DancingNode* node);
         DancingNode* linkRight(DancingNode* node);
         void removeLeftRight();
         void reinsertLeftRight();
         void removeTopDown();
         void reinsertTopDown();
-        void cover();
-        void uncover();
 
 };
 
-class ColumnNode : DancingNode{
+class ColumnNode : public DancingNode{
     public:
         int size;
         string name;
 
         ColumnNode(string n);
+        void cover();
+        void uncover();
+};
+
+class DLX{
+    private:
+        ColumnNode* header;
+        vector<DancingNode*> answer;
+        vector<DancingNode*> result;
+
+    public:
+        DLX(vector<vector<int> > cover){
+            header = createDLXvec(cover);
+        };
+        ColumnNode* createDLXvec(vector<vector<int> >);
+        void process(int);
 };
