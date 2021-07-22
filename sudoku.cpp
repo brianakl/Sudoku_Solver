@@ -175,7 +175,7 @@ bool Sudoku::back_tracking(){
 /*
 dancing links is an algorithm where the possible choices for each square are linked lists
 for that constraint
-
+*/
 void Sudoku::dancing_starter(){
 
 }
@@ -394,4 +394,3 @@ void DLX::process(int k){
 
 }
 
-*/
