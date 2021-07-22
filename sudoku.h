@@ -45,7 +45,7 @@ class Sudoku{
         vector<vector<int> > convert();
 
 };
-
+/*
 class DancingNode{
     
     public:
@@ -87,3 +87,5 @@ class DLX{
         ColumnNode* createDLXvec(vector<vector<int> >);
         void process(int);
 };
+
+*/

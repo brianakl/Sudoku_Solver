@@ -132,10 +132,13 @@ int Sudoku::find_open_col(){
 
 
 void Sudoku::back_starter(){
-    back_tracking();
+    if(back_tracking()){
+        cout << "Back tracking solution:" << endl;
+        print_board(Board);
+    } else {
+        cout << "No solution" << endl;
+    }
 
-    cout << "Back tracking solution:" << endl;
-    print_board(Board);
 }
 
 
@@ -147,15 +150,11 @@ bool Sudoku::back_tracking(){
     int row = find_open_row();
     int col = find_open_col();
 
-    //cout << row << " " << col << endl;
-
 
     for (int num = 1; num <= n; num++){
 
-            //cout << "seg fault" << endl;
         if (is_legal(num,row,col)){
             Board[row][col] = num;
-
         }
 
         if (Board[row][col] == 0)
@@ -167,7 +166,6 @@ bool Sudoku::back_tracking(){
         Board[row][col] = 0;
     }
 
-    //print_board(Board);
 
     return false;
 
@@ -177,7 +175,7 @@ bool Sudoku::back_tracking(){
 /*
 dancing links is an algorithm where the possible choices for each square are linked lists
 for that constraint
-*/
+
 void Sudoku::dancing_starter(){
 
 }
@@ -395,3 +393,5 @@ ColumnNode* DLX::createDLXvec(vector<vector<int> > cover){
 void DLX::process(int k){
 
 }
+
+*/
